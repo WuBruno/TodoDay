@@ -116,15 +116,13 @@ class TodoListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func removeItems(row : Int) {
-        if let currentCategory = self.selectedCategory {
-            do {
-                try realm.write {
-                    realm.delete(item)
-                }
-            } catch {
-                print("Error saving new items, \(error)")
+    func removeItems(item : Item) {
+        do {
+            try realm.write {
+                realm.delete(item)
             }
+        } catch {
+            print("Error saving new items, \(error)")
         }
     }
     
