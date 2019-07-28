@@ -7,13 +7,13 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
     
-    var categoryArray = [Category]()
+    var categoryArray: Results<Category>?
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,16 +24,16 @@ class CategoryViewController: UITableViewController {
     //Mark: - TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryArray.count
+        return categoryArray?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         print("working")
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
-        cell.textLabel?.text = categoryArray[indexPath.row].name
+        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Added Yet"
         
-        saveCategories()
+//        saveCategories()
         
         return cell
     }
@@ -42,18 +42,16 @@ class CategoryViewController: UITableViewController {
     
     func loadCategories() {
         
-        do{
-            categoryArray = try context.fetch(Category.fetchRequest())
-            print("did load")
-        } catch {
-            print("Error fetching data from context \(error)")
-        }
-        tableView.reloadData()
+        categoryArray = realm.objects(Category.self)
+        
     }
     
-    func saveCategories() {
+    func saveCategories(category : Category) {
         do{
-            try context.save()
+            // The object is added automatically whenever add is calledd
+            try realm.write {
+                realm.add(category)
+            }
         } catch {
             print("Error encoding item array. \(error)")
         }
@@ -69,12 +67,10 @@ class CategoryViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
             // What will happen once the user clicks the Add Item button on our UIAlert
-            let newCategory = Category(context: self.context)
+            let newCategory = Category()
             newCategory.name = textField.text!
             
-            self.categoryArray.append(newCategory)
-            
-            self.saveCategories()
+            self.saveCategories(category: newCategory)
             
             self.tableView.reloadData()
         }
@@ -101,7 +97,7 @@ class CategoryViewController: UITableViewController {
         let destinationVC = segue.destination as! TodoListViewController
         
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = categoryArray[indexPath.row]
+            destinationVC.selectedCategory = categoryArray?[indexPath.row]
         }
     }
 

@@ -1,0 +1,17 @@
+//
+//  Item.swift
+//  Todoey
+//
+//  Created by Bruno Wu on 27/07/2019.
+//  Copyright © 2019 Bruno Wu. All rights reserved.
+//
+
+import Foundation
+import RealmSwift
+
+class Item: Object {
+    @objc dynamic var title : String = ""
+    @objc dynamic var done : Bool = false
+    // Defining the inverse relationship
+    var parentCategory = LinkingObjects(fromType: Category.self, property: "items")
+}
