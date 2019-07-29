@@ -10,9 +10,9 @@ import UIKit
 import RealmSwift
 
 class CategoryViewController: UITableViewController {
-    
+    //Optional
     var categoryArray: Results<Category>?
-    
+    //Access point to our realm database
     let realm = try! Realm()
     
     override func viewDidLoad() {
@@ -22,18 +22,17 @@ class CategoryViewController: UITableViewController {
     }
     
     //Mark: - TableView Datasource Methods
-    
+    // Defines the number of rows in the section of the table
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // If nil then it will be 1 as a default
         return categoryArray?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("working")
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Added Yet"
-        
-//        saveCategories()
         
         return cell
     }
@@ -41,9 +40,8 @@ class CategoryViewController: UITableViewController {
     //Mark: - Data Manipulation Methods
     
     func loadCategories() {
-        
+        //Fetch all the objects that belong to the category object type
         categoryArray = realm.objects(Category.self)
-        
     }
     
     func saveCategories(category : Category) {
@@ -65,7 +63,7 @@ class CategoryViewController: UITableViewController {
         
         var textField = UITextField()
         
-        let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
+        let action = UIAlertAction(title: "Add", style: .default) { (action) in
             // What will happen once the user clicks the Add Item button on our UIAlert
             let newCategory = Category()
             newCategory.name = textField.text!

@@ -10,8 +10,10 @@ import Foundation
 import RealmSwift
 
 class Category: Object {
+    // Dynamic allows runtime checks
     @objc dynamic var name: String = ""
     //Array like container available in realm
+    // Shows the relationships between objects
     let items = List<Item>()
     
     
