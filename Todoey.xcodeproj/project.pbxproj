@@ -105,9 +105,9 @@
 				3CC095D022E2483A002CB13B /* AppDelegate.swift */,
 				3C20462A22E6220C0051DAC1 /* Controllers */,
 				3C20462B22E622150051DAC1 /* Views */,
+				3C20462922E622020051DAC1 /* Data Model */,
 				3C20462C22E6221F0051DAC1 /* Supporting Files */,
 				3CC095DC22E2483B002CB13B /* Info.plist */,
-				3C20462922E622020051DAC1 /* Data Model */,
 			);
 			path = Todoey;
 			sourceTree = "<group>";
