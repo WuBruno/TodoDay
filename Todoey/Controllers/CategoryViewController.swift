@@ -16,6 +16,7 @@ class CategoryViewController: SwipeTableViewController {
     //Access point to our realm database
     let realm = try! Realm()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,10 +38,10 @@ class CategoryViewController: SwipeTableViewController {
         
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Added Yet"
         
-        if let colour = categoryArray?[indexPath.row].bgColor {
+        guard let colour = categoryArray?[indexPath.row].bgColor else {fatalError()}
+        
             cell.backgroundColor = UIColor(hexString: colour)
             cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn: cell.backgroundColor!, isFlat: true)
-        }
         
         return cell
     }

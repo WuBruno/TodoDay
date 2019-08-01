@@ -23,17 +23,50 @@ class TodoListViewController: SwipeTableViewController {
         }
     }
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // userDomainMask where the user saves their information
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
         tableView.separatorStyle = .none
+        
+        
+    }
+    // Happens after viewDidLoad
+    override func viewWillAppear(_ animated: Bool) {
+        
+        title = selectedCategory?.name
+        
+        guard let colourHex = selectedCategory?.bgColor else {fatalError()}
+        
+        updateNavBar(withHexCode: colourHex)
+    }
+    // When the view is just about to be closed
+    override func viewWillDisappear(_ animated: Bool) {
+        updateNavBar(withHexCode: "1D9BF6")
+    }
+    
+    //MARK: - Nav Bar Setup Methods
+    func updateNavBar(withHexCode colourHexCode: String) {
+        // Guard is better than let if there is no else
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist.")}
+        
+        guard let navBarColour = UIColor(hexString: colourHexCode) else {fatalError()}
+        
+        navBar.barTintColor = navBarColour
+        
+        navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+        
+        searchBar.barTintColor = navBarColour
+        
+        navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: ContrastColorOf(navBarColour, returnFlat: true)]
     }
     
     //Mark - Tableview Datasource Methods
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return todoItems?.count ?? 1
     }
@@ -49,8 +82,8 @@ class TodoListViewController: SwipeTableViewController {
             cell.textLabel?.text = item.title
             
             if let colour = UIColor(hexString: selectedCategory!.bgColor!)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
-                 cell.backgroundColor = colour
-                 cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn: colour, isFlat: true
+                cell.backgroundColor = colour
+                cell.textLabel?.textColor = UIColor(contrastingBlackOrWhiteColorOn: colour, isFlat: true
                 )
             }
             
@@ -80,7 +113,7 @@ class TodoListViewController: SwipeTableViewController {
         //Calling cellForRowAt method again as to check the state of each cell
         tableView.reloadData()
     }
-     
+    
     // Mark - Add new items
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -121,7 +154,7 @@ class TodoListViewController: SwipeTableViewController {
     //Having NSPredicate? allows it to be optional
     
     func loadItems() {
-
+        
         todoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true)
         
         tableView.reloadData()
@@ -159,7 +192,7 @@ extension TodoListViewController: UISearchBarDelegate {
         
         tableView.reloadData()
     }
-
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.count == 0 {
             loadItems()
@@ -167,7 +200,7 @@ extension TodoListViewController: UISearchBarDelegate {
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()
             }
-
+            
         }
     }
 }
