@@ -12,6 +12,7 @@ import RealmSwift
 class Category: Object {
     // Dynamic allows runtime checks
     @objc dynamic var name: String = ""
+    @objc dynamic var bgColor: String? // Optional
     //Array like container available in realm
     // Shows the relationships between objects
     let items = List<Item>()
